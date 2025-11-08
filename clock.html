@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Digital Clock</title>
+  <style>
+    /* full-bleed container so it centers inside Figma frame */
+    html,body {
+      height:100%;
+      margin:0;
+      background:#000;
+      font-family: 'Courier New', monospace;
+      -webkit-font-smoothing:antialiased;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .clock {
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      padding:12px 18px;
+      border-radius:12px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+      user-select:none;
+    }
+
+    .time {
+      font-size:48px;
+      letter-spacing:2px;
+      color:#850404;
+      text-shadow: 0 0 12px rgba(0,255,153,0.25), 0 0 30px rgba(0,255,153,0.12);
+      font-weight:700;
+    }
+
+    .date {
+      font-size:14px;
+      color:#99ffcc;
+      opacity:0.85;
+      text-transform:uppercase;
+      letter-spacing:1px;
+    }
+
+    /* fallback when JS is disabled or blocked */
+    .noscript {
+      color:#ff6b6b;
+      font-size:14px;
+      padding:8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="clock" id="clock">
+    <div class="time" id="time">--:--:--</div>
+    <div class="date" id="date">Loading…</div>
+    <div class="noscript" id="noscript" style="display:none;">
+      JavaScript appears blocked in this embed. Host this file and embed its URL instead.
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const timeEl = document.getElementById('time');
+      const dateEl = document.getElementById('date');
+      const noscriptEl = document.getElementById('noscript');
+
+      // If scripts are running, ensure noscript message hidden
+      if (noscriptEl) noscriptEl.style.display = 'none';
+
+      function pad(n) { return n < 10 ? '0' + n : n; }
+
+      function update() {
+        const now = new Date();
+        // 24-hour format; change hour12 to true if you want AM/PM
+        const hh = pad(now.getHours());
+        const mm = pad(now.getMinutes());
+        const ss = pad(now.getSeconds());
+        timeEl.textContent = `${hh}:${mm}:${ss}`;
+
+        const day = now.toLocaleDateString('en-IN', { day: '2-digit' });
+        const month = now.toLocaleDateString('en-IN', { month: 'short' });
+        const year = now.getFullYear();
+        dateEl.textContent = `${day} ${month} ${year}`;
+      }
+
+      // update once immediately then every 500ms for a smooth tick
+      update();
+      setInterval(update, 500);
+    })();
+  </script>
+</body>
+</html>
